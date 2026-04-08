@@ -32,7 +32,7 @@ public class PacketSerializer(bool client)
         bw.Write(tempBuffer, 0, contentLen);
 
         var data = ms.ToArray();
-        ArrayPool<byte>.Shared.Return(data);
+        ArrayPool<byte>.Shared.Return(tempBuffer);
         return data;
     }
 
