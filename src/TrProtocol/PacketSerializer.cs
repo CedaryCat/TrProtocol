@@ -35,9 +35,10 @@ public class PacketSerializer(bool client)
 
             return ms.ToArray();
         }
-        finally
+        catch
         {
             ArrayPool<byte>.Shared.Return(tempBuffer, clearArray: false); // zeroing a ~64 KB buffer every time is too expensive.
+            throw;
         }
     }
 

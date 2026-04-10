@@ -102,17 +102,26 @@ public static class PacketCodec
             writer.Advance(totalLength);
             return totalLength;
         }
-        finally
+        catch
         {
             ArrayPool<byte>.Shared.Return(scratchBuffer, clearArray: false);
+            throw;
         }
     }
 
-    public static PacketCodecRental SerializeRented(INetPacket packet, RentalOwnership ownership = RentalOwnership.Exclusive)
+    public static PacketCodecRental SerializeRented(INetPacket packet, RentalOwnership ownership = RentalOwnership.Exclusive) 
     {
         var buffer = ArrayPool<byte>.Shared.Rent(MaxPacketSize);
-        var totalLength = Serialize(packet, buffer);
-        return new PacketCodecRental(buffer, totalLength, ownership);
+        try 
+        {
+            var totalLength = Serialize(packet, buffer);
+            return new PacketCodecRental(buffer, totalLength, ownership);
+        }
+        catch 
+        {
+            ArrayPool<byte>.Shared.Return(buffer, clearArray: false);
+            throw;
+        }
     }
 
     public static INetPacket Deserialize(ReadOnlySpan<byte> packetData, bool client)
