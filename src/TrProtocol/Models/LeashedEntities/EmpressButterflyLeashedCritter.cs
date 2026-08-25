@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Terraria.DataStructures;
 using TrProtocol.Attributes;
 
@@ -16,7 +17,7 @@ public partial class EmpressButterflyLeashedCritter : LeashedEntity
     [Condition(nameof(FullSync))]
     public Vector2 Size;
 
-    public Vector2 OffsetFromAnchor;
+    public HalfVector2 OffsetFromAnchor;
     public bool Direction;
     public uint RandState;
     public short WaitTime;

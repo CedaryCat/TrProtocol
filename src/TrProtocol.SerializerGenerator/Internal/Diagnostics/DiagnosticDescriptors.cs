@@ -66,12 +66,12 @@ public static class DiagnosticDescriptors
         true);
 
     /// <summary>
-    /// SCG14: BitsByte condition attribute is invalid.
+    /// SCG14: Indexed condition member must expose a readable Boolean Int32 indexer.
     /// </summary>
-    public static readonly DiagnosticDescriptor ConditionMemberMustBeBitsByte = new(
+    public static readonly DiagnosticDescriptor ConditionMemberMustHaveBooleanIntIndexer = new(
         "SCG14",
-        "Condition member must be BitsByte",
-        "arg1 of condition attribute must be name of field or property which type is {0}",
+        "Condition member must expose a Boolean Int32 indexer",
+        "Condition member '{0}' must expose a readable Boolean indexer with one Int32 parameter",
         Category,
         DiagnosticSeverity.Error,
         true);
@@ -338,6 +338,105 @@ public static class DiagnosticDescriptors
         "SCG47",
         "unsupported length-prefixed array attribute combination",
         "LengthPrefixedArrayAttribute on member '{0}' cannot be combined with {1}",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG50: ExternalMemberValueEqual arguments are malformed or ambiguous.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualArgumentsInvalid = new(
+        "SCG50",
+        "invalid external member equality binding",
+        "ExternalMemberValueEqualAttribute on member '{0}' has invalid or duplicate arguments",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG51: The owner source member was not found.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualSourceNotFound = new(
+        "SCG51",
+        "external equality source member not found",
+        "ExternalMemberValueEqualAttribute on member '{0}' cannot find source member '{1}' on owner type '{2}'",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG52: The nested target member was not found.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualTargetNotFound = new(
+        "SCG52",
+        "external equality target member not found",
+        "ExternalMemberValueEqualAttribute on member '{0}' cannot find target member '{1}' on nested type '{2}'",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG53: The nested target must opt in as an external member.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualTargetMustBeExternal = new(
+        "SCG53",
+        "external equality target must be external",
+        "Target member '{0}' on nested type '{1}' must be marked with ExternalMemberAttribute",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG54: Equality bindings can only feed boolean external members.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualTargetMustBeBoolean = new(
+        "SCG54",
+        "external equality target must be boolean",
+        "Target member '{0}' on nested type '{1}' must be Boolean, but was '{2}'",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG55: The equality source must already have been read from the wire.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualSourceMustPrecedeTarget = new(
+        "SCG55",
+        "external equality source must precede target",
+        "Source member '{0}' must be a serializable member declared before target member '{1}' on owner type '{2}'",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG56: The expected constant must have the source member's type.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualExpectedTypeMismatch = new(
+        "SCG56",
+        "external equality expected value type mismatch",
+        "Expected value for source member '{0}' must have type '{1}', but was '{2}'",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG57: The generator must be able to assign the nested external member before writing.
+    /// </summary>
+    public static readonly DiagnosticDescriptor ExternalMemberValueEqualTargetNotWritable = new(
+        "SCG57",
+        "external equality target is not writable",
+        "Target member '{0}' on nested type '{1}' must be writable by generated serialization code",
+        Category,
+        DiagnosticSeverity.Error,
+        true);
+
+    /// <summary>
+    /// SCG58: SerializeAs only supports primitive numeric wire conversions.
+    /// </summary>
+    public static readonly DiagnosticDescriptor SerializeAsRequiresNumericTypes = new(
+        "SCG58",
+        "SerializeAs requires numeric types",
+        "SerializeAsAttribute on member '{0}' only supports primitive numeric sources and targets, but received '{1}' -> '{2}'",
         Category,
         DiagnosticSeverity.Error,
         true);

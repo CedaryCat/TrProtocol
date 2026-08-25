@@ -7,8 +7,9 @@
 /// Interpreted by <c>TrProtocol.SerializerGenerator</c> as a comparison condition.
 /// The right-hand value is emitted syntactically, and is typically a numeric literal, <c>sizeof(...)</c>, or an enum
 /// member access.
+/// Multiple instances placed in separate attribute lists form alternative (OR) branches.
 /// </remarks>
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class ConditionEqualAttribute : Attribute
 {
     public readonly string fieldOrProperty;

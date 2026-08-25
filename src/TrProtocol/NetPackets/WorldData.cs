@@ -105,4 +105,7 @@ public partial struct WorldData : INetPacket
     [InitDefaultValue]
     [ArraySize(nameof(ExtraSpawnPointCount))]
     public Point16[] ExtraSpawnPoints;
+
+    [InitDefaultValue] public short DungeonX;
+    [InitDefaultValue] public short DungeonY;
 }

@@ -10,8 +10,9 @@
 /// values that are not serialized as part of the packet payload.
 /// </para>
 /// <para>
-/// This is also used together with <see cref="ExternalMemberValueAttribute"/> to allow nested serialization to set
-/// default values on inner members that are marked as external.
+/// This is also used together with <see cref="ExternalMemberValueAttribute"/> or
+/// <see cref="ExternalMemberValueEqualAttribute"/> to allow nested serialization to supply values on inner members
+/// that are marked as external.
 /// </para>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]

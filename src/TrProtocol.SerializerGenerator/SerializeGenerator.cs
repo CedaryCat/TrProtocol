@@ -149,8 +149,9 @@ public partial class SerializeGenerator : IIncrementalGenerator
 #endif
 
         #region Init global info
-        Compilation.LoadCompilation(data.compilation);
-        var abstractTypesSymbols = Compilation.GetLocalTypesSymbol()
+        var compilationContext = new CompilationContext();
+        compilationContext.LoadCompilation(data.compilation);
+        var abstractTypesSymbols = compilationContext.GetLocalTypesSymbol()
             .OfType<INamedTypeSymbol>()
             .Select(t => t.HasAbstractModelAttribute(out var info) ? (t.GetFullName(), info) : default)
             .Where(t => t != default)
@@ -158,10 +159,10 @@ public partial class SerializeGenerator : IIncrementalGenerator
 
         var typeSerializerDispatcher = TypeSerializerDispatcher.Create(
             abstractTypesSymbols.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value),
-            Compilation);
+            compilationContext);
         #endregion
 
-        var models = BuildModels(context, abstractTypesSymbols, data.infos);
+        var models = BuildModels(context, compilationContext, abstractTypesSymbols, data.infos);
         Dictionary<string, PolymorphicImplsData> polymorphicPackets;
         try {
             polymorphicPackets = ProtocolModelValidator.ValidatePolymorphic(abstractTypesSymbols, models.ToArray());
@@ -172,7 +173,7 @@ public partial class SerializeGenerator : IIncrementalGenerator
         }
 
         foreach (var model in models) {
-            TypeFileEmitter.Emit(context, Compilation, typeSerializerDispatcher, model, Transform);
+            TypeFileEmitter.Emit(context, compilationContext, typeSerializerDispatcher, model, Transform);
         }
 
         PolymorphicStaticDeserializeEmitter.Emit(context, polymorphicPackets);
@@ -180,13 +181,14 @@ public partial class SerializeGenerator : IIncrementalGenerator
 
     private static List<ProtocolTypeData> BuildModels(
         SourceProductionContext context,
+        CompilationContext compilationContext,
         Dictionary<string, PolymorphicImplsInfo> polymorphicTypes,
         ImmutableArray<ProtocolTypeInfo> infos) {
         var models = new List<ProtocolTypeData>(infos.Length);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         for (int i = 0; i < infos.Length; i++) {
             try {
-                var model = ProtocolModelBuilder.BuildProtocolTypeInfo(Compilation, polymorphicTypes, infos[i]);
+                var model = ProtocolModelBuilder.BuildProtocolTypeInfo(compilationContext, polymorphicTypes, infos[i]);
                 var key = model.DefSymbol.GetFullName();
                 if (seen.Add(key)) {
                     models.Add(model);
@@ -199,12 +201,7 @@ public partial class SerializeGenerator : IIncrementalGenerator
         return models;
     }
 
-    static CompilationContext Compilation = new CompilationContext();
-
     public void Initialize(IncrementalGeneratorInitializationContext initContext) {
-        initContext.RegisterSourceOutput(initContext.CompilationProvider.WithComparer(Compilation), Compilation.LoadCompilation);
-
-
         var classes = initContext.SyntaxProvider.CreateSyntaxProvider(predicate: FilterTypes, transform: Transform).Collect();
         var combine = initContext.CompilationProvider.Combine(classes);
         initContext.RegisterSourceOutput(combine, Execute);

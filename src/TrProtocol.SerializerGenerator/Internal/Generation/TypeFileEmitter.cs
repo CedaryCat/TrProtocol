@@ -158,8 +158,13 @@ internal static class TypeFileEmitter
                 if (model.IsConcreteImpl) {
                     foreach (var inherit in AbstractModelInheritanceResolver.ExtractInheritanceChain(modelSym)) {
                         if (inherit.HasAbstractModelAttribute(out var info)) {
-                            writeNode.WriteLine($"Unsafe.Write(ptr_current, ({info.EnumUnderlyingTypeName}){info.discriminatorPropertyName});");
-                            writeNode.WriteLine($"ptr_current = Unsafe.Add<{info.EnumUnderlyingTypeName}>(ptr_current, 1);");
+                            if (info.Is7BitEncoded) {
+                                writeNode.WriteLine($"CommonCode.Write7BitEncodedInt(ref ptr_current, (int){info.discriminatorPropertyName});");
+                            }
+                            else {
+                                writeNode.WriteLine($"Unsafe.Write(ptr_current, ({info.EnumUnderlyingTypeName}){info.discriminatorPropertyName});");
+                                writeNode.WriteLine($"ptr_current = Unsafe.Add<{info.EnumUnderlyingTypeName}>(ptr_current, 1);");
+                            }
                             writeNode.WriteLine();
                         }
                     }
@@ -227,7 +232,9 @@ internal static class TypeFileEmitter
                 var hasReadContent = GenerationHelpers.HasReadContent(modelSym);
 
                 if (!hasReadContent) {
-                    classNode.WriteLine($"[MemberNotNull({string.Join(", ", memberNullables.Select(m => $"nameof({m})"))})]");
+                    if (memberNullables.Count > 0) {
+                        classNode.WriteLine($"[MemberNotNull({string.Join(", ", memberNullables.Select(m => $"nameof({m})"))})]");
+                    }
                     classNode.Write($"public unsafe {((model.IsConcreteImpl && !model.IsValueType) ? "override " : "")}void ReadContent(ref void* ptr, void* ptr_end) ");
                     classNode.Sources.Add(readNode);
                 }

@@ -34,11 +34,6 @@ public class InlineTypeStrategy : ITypeSerializerStrategy
         var parentVar = context.ParentVar;
         var mTypeStr = context.TypeStr;
 
-        // Track nullable members.
-        if (parentVar is null && context.IsConditional && memberTypeSym!.IsReferenceType && !context.RoundState.IsArrayRound && !context.RoundState.IsEnumRound) {
-            context.MemberNullables.Add(m.MemberName);
-        }
-
         if (!_compilationContext.TryGetTypeDefSyntax(
             mTypeStr, out var tdef, context.Model.Namespace, context.Model.Imports) || tdef is null) {
             throw new DiagnosticException(
@@ -56,7 +51,8 @@ public class InlineTypeStrategy : ITypeSerializerStrategy
 
         var externalMemberValues = context.ExternalMemberValues;
         foreach (var (memberName, memberValue) in externalMemberValues) {
-            seriBlock.WriteLine($"{varName}.{memberName} = _{memberName};");
+            seriBlock.WriteLine($"{varName}.{memberName} = {memberValue};");
+            deserBlock.WriteLine($"{varName}.{memberName} = {memberValue};");
         }
 
         var transformedInfo = context.TransformCallback(tdef);

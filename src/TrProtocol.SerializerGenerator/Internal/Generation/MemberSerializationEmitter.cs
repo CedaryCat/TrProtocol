@@ -1,7 +1,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TrProtocol.Attributes;
-using TrProtocol.Exceptions;
 using TrProtocol.Interfaces;
 using TrProtocol.SerializerGenerator.Internal.Conditions.Analysis;
 using TrProtocol.SerializerGenerator.Internal.Conditions.CodeGeneration;
@@ -59,6 +58,16 @@ internal static class MemberSerializationEmitter
 
                     var seriTemp = new BlockNode(seriNode);
                     var deserTemp = new BlockNode(deserNode);
+                    foreach (var access in buffer
+                        .Where(entry => !entry.Condition.IsEmpty)
+                        .Select(entry => entry.ParentVar is null
+                            ? entry.Member.MemberName
+                            : $"{entry.ParentVar}.{entry.Member.MemberName}")
+                        .Distinct(StringComparer.Ordinal)) {
+                        // A protocol object can be reused for multiple reads. Optional members must not retain a
+                        // value from a previous frame when their current condition is false.
+                        deserTemp.WriteLine($"{access} = default;");
+                    }
                     ConditionBlockCodeGenerator.GenerateConditionBlocks(blocks, memberSources, seriTemp, deserTemp, currentParentVar);
                     seriNode.Sources.AddRange(seriTemp.Sources);
                     deserNode.Sources.AddRange(deserTemp.Sources);
@@ -191,7 +200,17 @@ internal static class MemberSerializationEmitter
                         }
                     }
 
-                    List<(string memberName, string memberValue)> externalMemberValues = ExternalMemberValueExtractor.Extract(m, memberTypeSym);
+                    var ownerMemberSymbol = (ISymbol?)fieldMemberSym ?? propMemberSym!;
+                    List<(string memberName, string memberValue)> externalMemberValues = ExternalMemberValueExtractor.Extract(
+                        m,
+                        memberTypeSym);
+                    externalMemberValues.AddRange(ExternalMemberValueEqualExtractor.Extract(
+                        m,
+                        memberTypeSym,
+                        typeSym,
+                        ownerMemberSymbol,
+                        parant_var,
+                        externalMemberValues.Select(value => value.memberName)));
                     string externalMemberValueArgs = "";
                     foreach (var (memberName, memberValue) in externalMemberValues) {
                         externalMemberValueArgs += $", _{memberName}: {memberValue}";
@@ -216,6 +235,7 @@ internal static class MemberSerializationEmitter
                         ExpandMembers,
                         transform);
 
+                    SerializeAsTypeValidator.Validate(typeSerializerContext);
                     var fixedSizeExpression = roundState.IsEnumRound
                         ? null
                         : FixedReadSizeResolver.TryGetFixedReadSizeExpression(typeSerializerContext);
@@ -245,4 +265,5 @@ internal static class MemberSerializationEmitter
             modelSym,
             model.Members.Select<SerializationExpandContext, (SerializationExpandContext, string?, RoundState)>(m => (m, null, RoundState.Empty)));
     }
+
 }

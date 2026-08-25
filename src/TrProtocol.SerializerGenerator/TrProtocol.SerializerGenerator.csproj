@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
 	  <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

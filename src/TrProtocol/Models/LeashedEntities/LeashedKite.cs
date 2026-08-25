@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Terraria.DataStructures;
 using TrProtocol.Attributes;
 
@@ -14,7 +15,7 @@ public partial class LeashedKite : LeashedEntity
     public int ProjType;
 
     public Vector2 Position;
-    public Vector2 Velocity;
+    public HalfVector2 Velocity;
     public byte Rotation;
     public float WindTarget;
     public float CloudAlpha;

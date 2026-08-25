@@ -51,8 +51,8 @@ public class BinarySerializableTypeStrategy : ITypeSerializerStrategy
                 if (externalMemberValues.Count > 0) {
                     var variableName = $"_temp_{m.MemberName}";
                     deserBlock.WriteLine($"var {variableName} = {memberAccess};");
-                    foreach (var m2 in externalMemberValues) {
-                        deserBlock.WriteLine($"{variableName}.{m2.memberName} = _{m2.memberName};");
+                    foreach (var (memberName, memberValue) in externalMemberValues) {
+                        deserBlock.WriteLine($"{variableName}.{memberName} = {memberValue};");
                     }
                     deserBlock.WriteLine($"{memberAccess} = {variableName};");
                 }

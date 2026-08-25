@@ -1,19 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Terraria.DataStructures;
 using TrProtocol.Attributes;
 
 namespace TrProtocol.Models.LeashedEntities;
 
-public partial class HellButterflyLeashedCritter : LeashedEntity
+public partial class FireflyLeashedCritter : LeashedEntity
 {
-    public sealed override LeashedEntityPrototype Prototype => LeashedEntityPrototype.HellButterflyLeashedCritter;
+    public sealed override LeashedEntityPrototype Prototype => LeashedEntityPrototype.FireflyLeashedCritter;
+
     [Condition(nameof(FullSync))]
     public sealed override Point16 AnchorPosition { get; set; }
 
     [Condition(nameof(FullSync))]
     [Int7BitEncoded]
     public int NPCType;
+
     [Condition(nameof(FullSync))]
     public Vector2 Size;
 

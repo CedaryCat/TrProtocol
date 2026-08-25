@@ -1,6 +1,5 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Terraria;
 using TrProtocol.Attributes;
 using TrProtocol.SerializerGenerator.Internal.Conditions.Model;
 using TrProtocol.SerializerGenerator.Internal.Diagnostics;
@@ -134,12 +133,12 @@ public static class ConditionAttributeParser
             var conditionTypes = conditionMember.OfType<IFieldSymbol>().Select(f => f.Type)
                 .Concat(conditionMember.OfType<IPropertySymbol>().Select(p => p.Type));
 
-            if (conditionIndex is not null && conditionTypes.Any(t => t.Name != nameof(BitsByte))) {
+            if (conditionIndex is not null && conditionTypes.Any(t => !HasReadableBooleanIntIndexer(t))) {
                 throw new DiagnosticException(
                     Diagnostic.Create(
-                        DiagnosticDescriptors.ConditionMemberMustBeBitsByte,
+                        DiagnosticDescriptors.ConditionMemberMustHaveBooleanIntIndexer,
                         attribute.GetLocation(),
-                        nameof(BitsByte)));
+                        memberName));
             }
 
             if (conditionIndex is null && conditionTypes.Any(t => t.Name != nameof(Boolean))) {
@@ -151,7 +150,7 @@ public static class ConditionAttributeParser
             }
 
             return conditionIndex is not null
-                ? new BitsByteConditionNode(memberName, conditionIndex, conditionPred)
+                ? new IndexedBooleanConditionNode(memberName, conditionIndex, conditionPred)
                 : new BooleanConditionNode(memberName, conditionPred);
         }
         catch (DiagnosticException) {
@@ -327,9 +326,9 @@ public static class ConditionAttributeParser
             }
         }
 
-        // Determine whether this is a BitsByte or a Boolean condition.
+        // Determine whether this is an indexed or scalar Boolean condition.
         if (conditionIndex != null) {
-            return new BitsByteConditionNode(memberName, conditionIndex, conditionPred);
+            return new IndexedBooleanConditionNode(memberName, conditionIndex, conditionPred);
         }
         else {
             return new BooleanConditionNode(memberName, conditionPred);
@@ -420,6 +419,16 @@ public static class ConditionAttributeParser
     }
 
     #region Helper Methods
+
+    private static bool HasReadableBooleanIntIndexer(ITypeSymbol type) {
+        return type.GetMembers()
+            .OfType<IPropertySymbol>()
+            .Any(property =>
+                property.IsIndexer
+                && property.GetMethod is not null
+                && property.Type.SpecialType == SpecialType.System_Boolean
+                && property.Parameters is [{ Type.SpecialType: SpecialType.System_Int32 }]);
+    }
 
     private static string? ExtractMemberName(ExpressionSyntax expr) {
         if (expr.IsLiteralExpression(out var text) && text.StartsWith("\"") && text.EndsWith("\"")) {

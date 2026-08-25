@@ -51,11 +51,6 @@ public class ArrayTypeStrategy : ITypeSerializerStrategy
         var arr = (ArrayTypeSyntax)m.MemberType;
         var eleSym = ((IArrayTypeSymbol)memberTypeSym).ElementType;
 
-        // Track nullable members.
-        if (parentVar is null && context.IsConditional && !context.RoundState.IsArrayRound && !context.RoundState.IsEnumRound) {
-            context.MemberNullables.Add(m.MemberName);
-        }
-
         // Validate unsupported multi-dimensional arrays.
         if (arr.RankSpecifiers.Count != 1 || context.RoundState.IsArrayRound) {
             throw new DiagnosticException(
@@ -839,13 +834,13 @@ public class ArrayTypeStrategy : ITypeSerializerStrategy
         deserBlock.BlockWrite((source) => {
             if (eleSym.IsValueType) {
                 source.WriteLine($"_g_arrayCache_{indexId}[_g_arrayIndex_{indexId}] = default;");
-                foreach (var exm in externalMemberValues) {
-                    source.WriteLine($"_g_arrayCache_{indexId}[_g_arrayIndex_{indexId}].{exm.memberName} = _{exm.memberName};");
+                foreach (var (memberName, memberValue) in externalMemberValues) {
+                    source.WriteLine($"_g_arrayCache_{indexId}[_g_arrayIndex_{indexId}].{memberName} = {memberValue};");
                 }
                 source.WriteLine($"_g_arrayCache_{indexId}[_g_arrayIndex_{indexId}].ReadContent(ref ptr_current, ptr_end);");
             }
             else {
-                source.WriteLine($"_g_arrayCache_{indexId}[_g_arrayIndex_{indexId}] = new (ref ptr_current, ptr_end);");
+                source.WriteLine($"_g_arrayCache_{indexId}[_g_arrayIndex_{indexId}] = new (ref ptr_current, ptr_end{context.ExternalMemberValueArgs});");
             }
             source.WriteLine($"var _g_repeatCountRaw_{indexId} = _g_arrayCache_{indexId}[_g_arrayIndex_{indexId}].RepeatCount;");
             source.WriteLine($"var _g_repeatCountInt64_{indexId} = (long)_g_repeatCountRaw_{indexId};");
