@@ -30,7 +30,7 @@ public class Int7BitEncodedStrategy : ITypeSerializerStrategy
         var isValidType = mTypeStr is "int" or nameof(Int32);
         var isValidEnumType = context.RoundState.IsEnumRound && context.RoundState.EnumType.underlyingType.GetPredifinedName() is "int";
 
-        if (!isValidType && !isValidType) {
+        if (!isValidType && !isValidEnumType) {
             throw new DiagnosticException(Diagnostic.Create(
                 DiagnosticDescriptors.Int7BitEncodedMemberInvalidType,
                 m.Attributes.First(a => a.AttributeMatch<Int7BitEncodedAttribute>()).GetLocation(),

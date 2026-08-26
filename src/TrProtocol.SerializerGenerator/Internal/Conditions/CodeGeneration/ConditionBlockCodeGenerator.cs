@@ -157,7 +157,7 @@ public static class ConditionBlockCodeGenerator
                 key = $"BOOL:{b.MemberName}";
                 expectedValue = b.ExpectedValue;
                 return true;
-            case BitsByteConditionNode b:
+            case IndexedBooleanConditionNode b:
                 key = $"BITS:{b.MemberName}[{b.Index}]";
                 expectedValue = b.ExpectedValue;
                 return true;

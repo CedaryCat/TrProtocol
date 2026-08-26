@@ -32,11 +32,6 @@ public class AbstractTypeStrategy : ITypeSerializerStrategy
         var memberTypeSym = context.MemberTypeSym;
         var externalMemberValueArgs = context.ExternalMemberValueArgs;
 
-        // Track nullable members.
-        if (context.ParentVar is null && context.IsConditional && !context.RoundState.IsArrayRound && !context.RoundState.IsEnumRound) {
-            context.MemberNullables.Add(m.MemberName);
-        }
-
         deserBlock.WriteLine($"{memberAccess} = {memberTypeSym.Name}.Read{memberTypeSym.Name}(ref ptr_current, ptr_end{externalMemberValueArgs});");
     }
 }

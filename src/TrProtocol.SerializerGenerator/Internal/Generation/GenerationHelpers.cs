@@ -10,14 +10,18 @@ namespace TrProtocol.SerializerGenerator.Internal.Generation;
 internal static class GenerationHelpers
 {
     public static List<(string memberName, string memberType)> GetExternalMembers(INamedTypeSymbol typeSym) {
-        var members = typeSym.DeclaringSyntaxReferences
-            .Select(r => r.GetSyntax())
-            .OfType<TypeDeclarationSyntax>()
-            .SelectMany(t => t.Members.Select(m => new {
-                Member = m,
-                Location = m.GetLocation(),
-            }))
-            .OrderBy(m => m.Location.SourceTree?.FilePath ?? "")
+        var members = new[] { typeSym }
+            .Concat(typeSym.GetAllBaseClasses())
+            .SelectMany((type, hierarchyIndex) => type.DeclaringSyntaxReferences
+                .Select(r => r.GetSyntax())
+                .OfType<TypeDeclarationSyntax>()
+                .SelectMany(t => t.Members.Select(m => new {
+                    HierarchyIndex = hierarchyIndex,
+                    Member = m,
+                    Location = m.GetLocation(),
+                })))
+            .OrderBy(m => m.HierarchyIndex)
+            .ThenBy(m => m.Location.SourceTree?.FilePath ?? "")
             .ThenBy(m => m.Location.SourceSpan.Start)
             .Select(m => m.Member)
             .ToArray();

@@ -7,10 +7,10 @@ internal static class GeneratorUsings
         "System.Runtime.CompilerServices",
         "System.Runtime.InteropServices",
         "System.Diagnostics.CodeAnalysis",
+        "TrProtocol",
         "TrProtocol.Attributes",
         "TrProtocol.Interfaces",
         "TrProtocol.Exceptions",
-        "TrProtocol.Models",
     ];
 }
 

@@ -7,7 +7,7 @@ Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 SCG03 | TrProtocol.SerializerGenerator | Error | ConflictingSideAttributes
 SCG04 | TrProtocol.SerializerGenerator | Error | SideSpecificRequiresInterface
-SCG14 | TrProtocol.SerializerGenerator | Error | ConditionMemberMustBeBitsByte
+SCG14 | TrProtocol.SerializerGenerator | Error | ConditionMemberMustHaveBooleanIntIndexer
 SCG15 | TrProtocol.SerializerGenerator | Error | ConditionMemberMustBeBoolean
 SCG16 | TrProtocol.SerializerGenerator | Error | ConditionAttributeArgumentInvalid
 SCG17 | TrProtocol.SerializerGenerator | Error | ConditionComparisonMemberNotFound
@@ -36,3 +36,12 @@ SCG44 | TrProtocol.SerializerGenerator | Error | LengthPrefixedArrayRankUnsuppor
 SCG45 | TrProtocol.SerializerGenerator | Error | LengthPrefixedArrayInvalidLengthType
 SCG46 | TrProtocol.SerializerGenerator | Error | LengthPrefixedArrayConflictsWithArraySize
 SCG47 | TrProtocol.SerializerGenerator | Error | LengthPrefixedArrayUnsupportedCombination
+SCG50 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualArgumentsInvalid
+SCG51 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualSourceNotFound
+SCG52 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualTargetNotFound
+SCG53 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualTargetMustBeExternal
+SCG54 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualTargetMustBeBoolean
+SCG55 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualSourceMustPrecedeTarget
+SCG56 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualExpectedTypeMismatch
+SCG57 | TrProtocol.SerializerGenerator | Error | ExternalMemberValueEqualTargetNotWritable
+SCG58 | TrProtocol.SerializerGenerator | Error | SerializeAsRequiresNumericTypes

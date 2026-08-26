@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Terraria.DataStructures;
 using TrProtocol.Attributes;
 
@@ -21,7 +22,7 @@ public partial class WalkerLeashedCritter : LeashedEntity
     [Condition(nameof(FullSync))]
     public Vector2 Size;
 
-    public Vector2 OffsetFromAnchor;
+    public HalfVector2 OffsetFromAnchor;
     public bool Direction;
     public uint RandState;
     public short WaitTime;

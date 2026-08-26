@@ -69,9 +69,9 @@ public sealed record BooleanConditionNode(string MemberName, bool ExpectedValue 
 }
 
 /// <summary>
-/// BitsByte index condition node (e.g. [Condition(nameof(Flags), 0)]).
+/// Boolean-indexer condition node (e.g. [Condition(nameof(Flags), 0)]).
 /// </summary>
-public sealed record BitsByteConditionNode(string MemberName, string Index, bool ExpectedValue = true) : ConditionNode
+public sealed record IndexedBooleanConditionNode(string MemberName, string Index, bool ExpectedValue = true) : ConditionNode
 {
     public override string ToConditionExpression(string? parentVar, bool isSerializing)
     {

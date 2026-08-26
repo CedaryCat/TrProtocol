@@ -10,6 +10,7 @@ public abstract partial class LeashedEntity : IAutoSerializable
     [Int7BitEncoded]
     public abstract LeashedEntityPrototype Prototype { get; }
 
+    [ExternalMember]
     [IgnoreSerialize]
     public bool FullSync;
     public abstract Point16 AnchorPosition { get; set; }
