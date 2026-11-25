@@ -171,6 +171,9 @@ public enum MessageID : byte
     ItemPosition = 160,
     HostToken = 161,
     DamageNPCAck = 162,
+    ServerInfo = 163,
+    PlayerPlatformInfo = 164,
+    CustomServerAck = 165,
 
     // Aliases matching TShock PacketTypes
 
@@ -267,5 +270,5 @@ public enum MessageID : byte
     NpcHurtByDebuff = 153,
     SyncItemPosition = 160,
 
-    Count = 163,
+    Count = 166,
 }
