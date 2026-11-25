@@ -2,10 +2,10 @@
 
 public static class Constants
 {
-    public const int ProtocolVersion = 326;
-    public const string VersionString = "Terraria326";
+    public const int ProtocolVersion = 329;
+    public const string VersionString = "Terraria329";
 
-    public static readonly bool[] tileFrameImportant = Create(753, true,
+    public static readonly bool[] tileFrameImportant = Create(754, true,
         3, 4, 5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 26, 27, 28, 
         29, 31, 33, 34, 35, 36, 42, 49, 50, 55, 61, 71, 72, 73, 74, 77, 78, 79, 81, 
         82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 
@@ -31,7 +31,7 @@ public static class Constants
         642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 656, 657, 658, 
         660, 663, 664, 665, 693, 694, 695, 696, 698, 699, 700, 701, 702, 703, 704, 705, 
         706, 707, 709, 710, 711, 712, 713, 714, 715, 716, 720, 721, 723, 724, 725, 726, 
-        733, 751, 752);
+        733, 751, 752, 753);
     private static T[] Create<T>(int count, T nonDefaultValue, params int[] indexes) {
         var result = new T[count];
         foreach (var item in indexes) {
